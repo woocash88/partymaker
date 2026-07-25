@@ -1,0 +1,39 @@
+{
+  "GUILD_ID": "947158056381337630",
+  "PARTY_CHANNEL_ID": "1471639746571796641",
+  "modeColors": {
+    "Ranked": 16711680,
+    "Normal": 65535,
+    "Battlecup": 16766720,
+    "Inhouse": 8421504,
+    "Low prio": 16729344
+  },
+  "modeRoles": {
+    "Ranked": "<@&980824750291050527>",
+    "Normal": "<@&985527058929180683>",
+    "Battlecup": "<@&1104441802200719492>",
+    "Inhouse": "<@&980824894172446740>",
+    "Low prio": "LOW PRIO 👩‍🦽"
+  },
+  "rankEmojis": {
+    "Dowolna": "❓",
+    "Herald": "985542468093214761",
+    "Guardian": "985542470119063592",
+    "Crusader": "985542471926812723",
+    "Archon": "985542473948471376",
+    "Legend": "985542475718463488",
+    "Ancient": "985542477610090566",
+    "Divine": "985542479539474442",
+    "Immortal": "985542481615650826"
+  },
+  "rankDisplay": {
+    "Herald": "<:herald:985542468093214761> Herald |",
+    "Guardian": "<:guardian:985542470119063592> Guardian |",
+    "Crusader": "<:crusader:985542471926812723> Crusader |",
+    "Archon": "<:archon:985542473948471376> Archon |",
+    "Legend": "<:legend:985542475718463488> Legend |",
+    "Ancient": "<:ancient:985542477610090566> Ancient |",
+    "Divine": "<:divine:985542479539474442> Divine |",
+    "Immortal": "<:immortal:985542481615650826> Immortal |"
+  }
+}

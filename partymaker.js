@@ -20,7 +20,7 @@ const EXPIRE_MINUTES = 30;
 const THREAD_EXPIRY_MS = 86400000;  // 24h
 const COOLDOWN_MS = 60000;          // 1 min cooldown na tworzenie
 
-const DASHBOARD_BANNER = 'dashboard.png';
+const PANEL_BANNER = 'dashboard.png';
 
 // Grafiki dla trybów gry
 const modeBanners = {
@@ -167,7 +167,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand() && interaction.commandName === 'party') {
     await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
     logEvent('COMMAND_PARTY', userTag, `channel=${interaction.channelId}`);
-    const bannerPath = path.join(__dirname, DASHBOARD_BANNER);
+    const bannerPath = path.join(__dirname, PANEL_BANNER);
     const files = fs.existsSync(bannerPath) ? [new AttachmentBuilder(bannerPath)] : [];
 
     const embed = new EmbedBuilder()
@@ -175,7 +175,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       .setDescription(`1️⃣ Wybierz tryb gry poniżej.\n2️⃣ Podaj liczbę graczy, rangi oraz kanał głosowy.\n3️⃣ Gotowe! 😎\n\nPo **${WARN_MINUTES} min** otrzymasz przypomnienie, a po **${EXPIRE_MINUTES} min** ogłoszenie wygaśnie automatycznie.\nJeśli przebywasz na podanym kanale głosowym, to ogłoszenie będzie aktywne dopóki jesteś na tym kanale.\n\n[📜 Kliknij tutaj, aby sprawdzić Changelog!](https://discord.com/channels/947158056381337630/1516744426406543400/1516744500553318420)`)
       .setColor(0xFF0000);
 
-    if (files.length) embed.setImage(`attachment://${DASHBOARD_BANNER}`);
+    if (files.length) embed.setImage(`attachment://${PANEL_BANNER}`);
     const row = new ActionRowBuilder().addComponents(['Ranked', 'Normal', 'Battlecup', 'Inhouse', 'Low prio'].map((m, i) =>
       new ButtonBuilder().setCustomId(`start_${m}`).setLabel(m).setEmoji(modeEmojis[m]).setStyle([ButtonStyle.Success, ButtonStyle.Primary, ButtonStyle.Secondary, ButtonStyle.Secondary, ButtonStyle.Danger][i])
     ));

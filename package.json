@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Matchmaker bot Discord",
   "main": "partymaker.js",
-  "bin": "partymaker.js",
   "scripts": {
     "start": "node partymaker.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -21,6 +21,7 @@ const THREAD_EXPIRY_MS = 86400000;  // 24h
 const COOLDOWN_MS = 60000;          // 1 min cooldown na tworzenie
 
 const PANEL_BANNER = 'dashboard.png';
+const FEEDBACK_CHANNEL_ID = '1556778409583976529';
 
 // Grafiki dla trybów gry
 const modeBanners = {
@@ -176,9 +177,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
       .setColor(0xFF0000);
 
     if (files.length) embed.setImage(`attachment://${PANEL_BANNER}`);
-    const row = new ActionRowBuilder().addComponents(['Ranked', 'Normal', 'Battlecup', 'Inhouse', 'Low prio'].map((m, i) =>
-      new ButtonBuilder().setCustomId(`start_${m}`).setLabel(m).setEmoji(modeEmojis[m]).setStyle([ButtonStyle.Success, ButtonStyle.Primary, ButtonStyle.Secondary, ButtonStyle.Secondary, ButtonStyle.Danger][i])
+    const row = new ActionRowBuilder().addComponents(['Ranked', 'Normal', 'Battlecup', 'Low prio'].map((m, i) =>
+      new ButtonBuilder().setCustomId(`start_${m}`).setLabel(m).setEmoji(modeEmojis[m]).setStyle([ButtonStyle.Success, ButtonStyle.Primary, ButtonStyle.Secondary, ButtonStyle.Danger][i])
     ));
+    row.addComponents(new ButtonBuilder().setCustomId('feedback').setLabel('Co myślisz o bocie?').setEmoji('💬').setStyle(ButtonStyle.Secondary));
 
     await interaction.channel.send({ embeds: [embed], components: [row], files });
     return replyAndDelete(interaction, 'Panel wysłany!', 1000);
@@ -206,6 +208,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
       creationCache.set(userId, { count: (id === 'Low prio' ? 'Obojętnie' : '1'), ranks: (id === 'Low prio' ? ['Dowolna'] : []), vc: null, description: '', processing: false, timestamp: Date.now() });
       logEvent('SETUP_START', userTag, `mode=${id}`);
       return interaction.editReply(createSetupPanel(userId, id));
+    }
+
+    if (action === 'feedback') {
+      const modal = new ModalBuilder().setCustomId('modalfeedback').setTitle('Co myślisz o bocie?');
+      const input = new TextInputBuilder().setCustomId('feedbackinput').setLabel('Twoja opinia (max 1000 znaków)').setStyle(TextInputStyle.Paragraph).setMaxLength(1000).setRequired(true);
+      modal.addComponents(new ActionRowBuilder().addComponents(input));
+      return await interaction.showModal(modal);
     }
 
     if (action === 'setdesc') {
@@ -363,6 +372,27 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const parts = interaction.customId.split('_');
     const action = parts.shift();
     const mode = parts.join('_');
+
+    if (interaction.customId === 'modalfeedback') {
+      const text = interaction.fields.getTextInputValue('feedbackinput').trim();
+      if (!text) return interaction.reply({ content: '❌ Wiadomość jest pusta.', flags: [MessageFlags.Ephemeral] });
+      try {
+        const channel = await client.channels.fetch(FEEDBACK_CHANNEL_ID);
+        const embed = new EmbedBuilder()
+          .setTitle('💬 Opinia o bocie')
+          .setDescription(text)
+          .setAuthor({ name: userTag, iconURL: interaction.user.displayAvatarURL() })
+          .setFooter({ text: `ID: ${userId}` })
+          .setTimestamp()
+          .setColor(0xFF0000);
+        await channel.send({ embeds: [embed] });
+        logEvent('FEEDBACK_SENT', userTag, `length=${text.length}`);
+        return interaction.reply({ content: '✅ Dziękujemy za opinię!', flags: [MessageFlags.Ephemeral] });
+      } catch (err) {
+        logEvent('FEEDBACK_FAILED', userTag, String(err.message || err));
+        return interaction.reply({ content: '❌ Nie udało się wysłać wiadomości. Spróbuj później.', flags: [MessageFlags.Ephemeral] });
+      }
+    }
 
     if (action === 'modaldesc') {
       const data = creationCache.get(userId);
